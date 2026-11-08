@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Teachers')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<main class="container">
+    <div class="page-header">
+        <h1>Teachers</h1>
+        <a class="btn" th:href="@{${base} + '/new'}">+ Add Teacher</a>
+    </div>
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th><th>Name</th><th>Username</th><th>Email</th>
+                <th>Department</th><th>Designation</th><th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="t : ${teachers}">
+                <td th:text="${t.id}">1</td>
+                <td th:text="${t.fullName}">Name</td>
+                <td th:text="${t.username}">username</td>
+                <td th:text="${t.email}">email</td>
+                <td th:text="${t.department}">Dept</td>
+                <td th:text="${t.designation}">Designation</td>
+                <td class="actions">
+                    <a class="btn btn-secondary" th:href="@{${base} + '/' + ${t.id} + '/edit'}">Edit</a>
+                    <form th:if="${t.id != #authentication.principal.id}"
+                          th:action="@{${base} + '/' + ${t.id} + '/delete'}" method="post"
+                          onsubmit="return confirm('Delete this teacher?');">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                    <span class="badge" th:if="${t.id == #authentication.principal.id}">You</span>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(teachers)}"><td colspan="7">No teachers yet.</td></tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

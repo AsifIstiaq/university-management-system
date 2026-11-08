@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Error')}"></head>
+<body>
+<main class="container login-box">
+    <div class="card">
+        <h1><span th:text="${status}">500</span> - <span th:text="${error}">Error</span></h1>
+        <p th:if="${status == 403}">You do not have permission to open this page.</p>
+        <p th:if="${status == 404}">The page or record you asked for could not be found.</p>
+        <p th:if="${status != null and status != 403 and status != 404}">Something went wrong. Please try again.</p>
+        <a class="btn" th:href="@{/}">Back to home</a>
+    </div>
+</main>
+</body>
+</html>

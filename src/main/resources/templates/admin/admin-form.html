@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Admin Form')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<main class="container">
+    <div class="card">
+        <h2 th:text="${editMode} ? 'Edit Admin' : 'Add Admin'">Admin</h2>
+
+        <form class="form" th:object="${admin}" method="post"
+              th:action="${editMode} ? @{/admin/admins/{id}(id=${adminId})} : @{/admin/admins}">
+
+            <div class="field">
+                <label for="username">Username</label>
+                <input type="text" id="username" th:field="*{username}" th:readonly="${editMode}">
+                <span class="hint" th:if="${editMode}">Username cannot be changed.</span>
+                <span class="error-text" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+            </div>
+            <div class="field">
+                <label for="password">Password</label>
+                <input type="password" id="password" th:field="*{password}">
+                <span class="hint" th:if="${editMode}">Leave blank to keep the current password.</span>
+                <span class="error-text" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+            </div>
+            <div class="field">
+                <label for="fullName">Full name</label>
+                <input type="text" id="fullName" th:field="*{fullName}">
+                <span class="error-text" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></span>
+            </div>
+            <div class="field">
+                <label for="email">Email</label>
+                <input type="text" id="email" th:field="*{email}">
+                <span class="error-text" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+            </div>
+            <div class="field">
+                <label for="phone">Phone</label>
+                <input type="text" id="phone" th:field="*{phone}">
+                <span class="error-text" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></span>
+            </div>
+
+            <button type="submit" class="btn">Save</button>
+            <a class="btn btn-secondary" th:href="@{/admin/admins}">Cancel</a>
+        </form>
+    </div>
+</main>
+</body>
+</html>

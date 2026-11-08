@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title} + ' | University Management System'">University Management System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav class="navbar" th:fragment="nav">
+    <a class="brand" th:href="@{/}">University Management System</a>
+    <ul>
+        <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin}">Dashboard</a></li>
+        <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin/teachers}">Teachers</a></li>
+        <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin/students}">Students</a></li>
+        <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin/admins}">Admins</a></li>
+        <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin/profile}">My Profile</a></li>
+        <li sec:authorize="hasRole('TEACHER')"><a th:href="@{/teacher/teachers}">Teachers</a></li>
+        <li sec:authorize="hasRole('TEACHER')"><a th:href="@{/teacher/profile}">My Profile</a></li>
+        <li sec:authorize="hasRole('STUDENT')"><a th:href="@{/student/students}">Students</a></li>
+        <li sec:authorize="hasRole('STUDENT')"><a th:href="@{/student/profile}">My Profile</a></li>
+    </ul>
+    <form class="logout" th:action="@{/logout}" method="post">
+        <span class="user" sec:authentication="name">user</span>
+        <button type="submit" class="btn btn-outline">Logout</button>
+    </form>
+</nav>
+
+<div th:fragment="flash">
+    <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+    <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+</div>
+
+</body>
+</html>

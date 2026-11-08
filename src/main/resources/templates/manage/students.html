@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Students')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<main class="container">
+    <div class="page-header">
+        <h1>Students</h1>
+        <a class="btn" th:href="@{${base} + '/new'}">+ Add Student</a>
+    </div>
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th><th>Name</th><th>Username</th><th>Email</th>
+                <th>Roll</th><th>Department</th><th>Semester</th><th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="s : ${students}">
+                <td th:text="${s.id}">1</td>
+                <td th:text="${s.fullName}">Name</td>
+                <td th:text="${s.username}">username</td>
+                <td th:text="${s.email}">email</td>
+                <td th:text="${s.roll}">Roll</td>
+                <td th:text="${s.department}">Dept</td>
+                <td th:text="${s.semester}">1</td>
+                <td class="actions">
+                    <a class="btn btn-secondary" th:href="@{${base} + '/' + ${s.id} + '/edit'}">Edit</a>
+                    <form th:if="${s.id != #authentication.principal.id}"
+                          th:action="@{${base} + '/' + ${s.id} + '/delete'}" method="post"
+                          onsubmit="return confirm('Delete this student?');">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                    <span class="badge" th:if="${s.id == #authentication.principal.id}">You</span>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(students)}"><td colspan="8">No students yet.</td></tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

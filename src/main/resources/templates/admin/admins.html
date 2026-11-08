@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Admins')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<main class="container">
+    <div class="page-header">
+        <h1>Admins</h1>
+        <a class="btn" th:href="@{/admin/admins/new}">+ Add Admin</a>
+    </div>
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+            <tr><th>ID</th><th>Name</th><th>Username</th><th>Email</th><th>Phone</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="a : ${admins}">
+                <td th:text="${a.id}">1</td>
+                <td th:text="${a.fullName}">Name</td>
+                <td th:text="${a.username}">username</td>
+                <td th:text="${a.email}">email</td>
+                <td th:text="${a.phone}">phone</td>
+                <td class="actions">
+                    <a class="btn btn-secondary" th:href="@{/admin/admins/{id}/edit(id=${a.id})}">Edit</a>
+                    <form th:if="${a.id != #authentication.principal.id}"
+                          th:action="@{/admin/admins/{id}/delete(id=${a.id})}" method="post"
+                          onsubmit="return confirm('Delete this admin?');">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                    <span class="badge" th:if="${a.id == #authentication.principal.id}">You</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

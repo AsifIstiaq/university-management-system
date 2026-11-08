@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:        # lets you start it by hand from the Actions tab
+
+jobs:
+  test:
+    name: Unit and integration tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      # Tests run on an in-memory H2 database (profile "test"), so no PostgreSQL service is needed.
+      # The tests that fail on purpose are excluded here (they have their own workflow).
+      - name: Run tests with Maven
+        run: mvn -B clean verify
+
+      - name: Show test summary
+        if: always()
+        run: |
+          python3 - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import glob, xml.etree.ElementTree as ET
+          rows, total, bad = [], 0, 0
+          for f in sorted(glob.glob("target/surefire-reports/TEST-*.xml")):
+              r = ET.parse(f).getroot()
+              t, fl, er, sk = (int(r.get(k, 0)) for k in ("tests", "failures", "errors", "skipped"))
+              total += t; bad += fl + er
+              rows.append(f"| {r.get('name').split('.')[-1]} | {t} | {fl} | {er} | {sk} |")
+          print("## Test results")
+          print(f"**{total} tests run, {bad} failed**\n")
+          print("| Test class | Tests | Failures | Errors | Skipped |")
+          print("|---|---|---|---|---|")
+          print("\n".join(rows))
+          PY
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: target/surefire-reports/
+
+  docker:
+    name: Build Docker image
+    needs: test            # only runs when all tests passed
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t university-management-system .

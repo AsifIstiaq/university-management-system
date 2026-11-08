@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Admin Dashboard')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<main class="container">
+    <div class="page-header"><h1>Admin Dashboard</h1></div>
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <div class="stats">
+        <div class="stat">
+            <div class="number" th:text="${teacherCount}">0</div>
+            <div>Teachers</div>
+            <a th:href="@{/admin/teachers}">Manage</a>
+        </div>
+        <div class="stat">
+            <div class="number" th:text="${studentCount}">0</div>
+            <div>Students</div>
+            <a th:href="@{/admin/students}">Manage</a>
+        </div>
+        <div class="stat">
+            <div class="number" th:text="${adminCount}">0</div>
+            <div>Admins</div>
+            <a th:href="@{/admin/admins}">Manage</a>
+        </div>
+    </div>
+</main>
+</body>
+</html>

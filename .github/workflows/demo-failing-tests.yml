@@ -1,0 +1,31 @@
+name: Demo - failing tests
+
+# DEMO ONLY. Start it by hand: Actions tab -> "Demo - failing tests" -> Run workflow.
+# It runs the whole suite INCLUDING the tests that fail on purpose, so this run ends red (X).
+on:
+  workflow_dispatch:
+
+jobs:
+  demo-failure:
+    name: Tests including the ones that fail on purpose
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Run all tests (2 are expected to fail)
+        run: mvn -B clean test -Pdemo-failure
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: demo-failure-reports
+          path: target/surefire-reports/
